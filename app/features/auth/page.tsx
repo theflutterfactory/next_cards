@@ -3,9 +3,11 @@ import { useAuth } from "./hooks/useAuth";
 import AuthInput from "./components/input";
 import { Button, Center, Text } from "@chakra-ui/react";
 import { LoginType } from "./types/auth";
+import { useState } from "react";
 
 function Login() {
   const { data, isLoading, error } = useAuth();
+  const [isLogin, setIsLogin] = useState(true);
 
   console.log(data);
   console.log(isLoading);
@@ -14,6 +16,7 @@ function Login() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors }
   } = useForm<LoginType>();
 
@@ -54,11 +57,31 @@ function Login() {
         })}
         errorText={errors.password?.message}
       />
+      {
+        !isLogin &&
+        <AuthInput
+          name="confirm password"
+          register={register('confirmPassword', {
+            required: 'Confirm Password is required',
+            validate: (value) => value === watch('password') ||
+              'Password and Confirm Password must match',
+            minLength: {
+              value: 8,
+              message: 'Confirm Password must be at least 8 characters'
+            }
+
+          })}
+          errorText={errors.confirmPassword?.message}
+        />
+      }
       <div className="flex space-x-4">
         <Button
           className="flex-1 rounded-md"
           name="login"
-          onClick={handleSubmit(onLoginSubmit)}
+          onClick={
+            isLogin ?
+              handleSubmit(onLoginSubmit) :
+              handleSubmit(onSignupSubmit)}
           colorScheme='white'
           type="submit"
           variant='solid'
@@ -67,20 +90,17 @@ function Login() {
           }}
           bgColor='purple.fg'
         >
-          Login
+          {isLogin ? 'Login' : 'Signup'}
         </Button>
         <Button
           className="flex-1 rounded-md"
-          name="signup"
-          onClick={handleSubmit(onSignupSubmit)}
-          colorScheme='white'
-          type="submit"
-          variant='solid'
+          onClick={() => setIsLogin(!isLogin)}
           _hover={{
             borderWidth: 0.5
           }}
+          colorScheme='white'
         >
-          Signup
+          {`Switch to ${isLogin ? 'Signup' : 'Login'}`}
         </Button>
       </div>
     </form>
