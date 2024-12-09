@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../client";
+import { supabase } from "../../../lib/client";
 
 async function getSession() {
   const { data, error } = await supabase.auth.getSession();
