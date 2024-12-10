@@ -1,6 +1,6 @@
 'use client';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Login from "./features/auth/page";
+import Login from "./auth/page";
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 export default function App() {

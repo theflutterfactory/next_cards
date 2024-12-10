@@ -1,9 +1,11 @@
+'use client';
 import { useForm } from "react-hook-form";
 import { useAuth } from "./hooks/useAuth";
 import AuthInput from "./components/input";
 import { Button, Center, Text } from "@chakra-ui/react";
 import { LoginType } from "./types/auth";
 import { useState } from "react";
+import { supabase } from "@/app/lib/client";
 
 function Login() {
   const { data, isLoading, error } = useAuth();
@@ -20,13 +22,25 @@ function Login() {
     formState: { errors }
   } = useForm<LoginType>();
 
-  function onLoginSubmit(data: LoginType) {
+  async function onLoginSubmit(formData: LoginType) {
+    const { data, error } = await supabase.auth.getSession();
+
+    console.log(formData);
     console.log(data);
+    console.log(error);
   }
 
-  function onSignupSubmit(data: LoginType) {
+  async function onSignupSubmit(formData: LoginType) {
+    console.log(formData);
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+    });
+
     console.log(data);
+    console.log(error);
   }
+
   return (
     <form
       className="flex flex-col mx-auto w-1/3 gap-8 center h-screen justify-center"
@@ -81,7 +95,8 @@ function Login() {
           onClick={
             isLogin ?
               handleSubmit(onLoginSubmit) :
-              handleSubmit(onSignupSubmit)}
+              handleSubmit(onSignupSubmit)
+          }
           colorScheme='white'
           type="submit"
           variant='solid'
