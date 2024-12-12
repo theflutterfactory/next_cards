@@ -1,7 +1,10 @@
 'use client';
-import { Button, Center, Separator, Text } from "@chakra-ui/react";
+import { Center, Text } from "@chakra-ui/react";
+import { useAuth } from "../auth/hooks/useAuth";
 
 function Dashboard() {
+  const session = useAuth();
+  console.log(session);
   return (
     <>
       <Center>

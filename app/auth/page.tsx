@@ -2,18 +2,21 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "./hooks/useAuth";
 import AuthInput from "./components/input";
-import { Button, Center, Text } from "@chakra-ui/react";
 import { LoginType } from "./types/auth";
 import { useState } from "react";
 import { supabase } from "@/app/lib/client";
+import { redirect } from "next/navigation";
+import { Center } from "@chakra-ui/react/center";
+import { Text } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 
 function Login() {
-  const { data, isLoading, error } = useAuth();
+  const session = useAuth();
   const [isLogin, setIsLogin] = useState(true);
 
-  console.log(data);
-  console.log(isLoading);
-  console.log(error);
+  if (session?.data) {
+    redirect('/dashboard');
+  }
 
   const {
     register,
@@ -23,11 +26,17 @@ function Login() {
   } = useForm<LoginType>();
 
   async function onLoginSubmit(formData: LoginType) {
-    const { data, error } = await supabase.auth.getSession();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
 
-    console.log(formData);
     console.log(data);
     console.log(error);
+
+    if (data?.session) {
+      redirect('/dashboard');
+    }
   }
 
   async function onSignupSubmit(formData: LoginType) {
