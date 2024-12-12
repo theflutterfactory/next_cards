@@ -2,6 +2,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,14 +21,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const queryClient = new QueryClient();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ChakraProvider value={defaultSystem}>
-          {children}
-        </ChakraProvider>
+        <QueryClientProvider client={queryClient}>
+          <ChakraProvider value={defaultSystem}>
+            {children}
+          </ChakraProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );
